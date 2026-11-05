@@ -8,7 +8,6 @@ Effort: S (<1 day), M (days), L (week+).
 |----------|-------|-------------|--------|
 | HIGH | Verify build on target | Run `scripts/build.sh` and `scripts/preflight.sh` on the target host | S |
 | HIGH | Coral Edge TPU bring-up | Install `libedgetpu1-std`, `pip install -e "./ai[coral]"`, run `scripts/export-edgetpu.sh`, verify `load_delegate` works on the host Python, then run a sample frame through `nvr-detect` (executor is untested on hardware) | M |
-| HIGH | Verify ONNX model output | Confirm `detect.py` parses a stock Ultralytics `yolo11n.onnx` export (sample frame via `nvr-detect`) | S |
 | HIGH | Real-camera smoke test | Stream, motion event, frame extraction, detection tags, disk cleanup threshold | S |
 | HIGH | Auth and TLS | Set `NVR_USER`/`NVR_PASSWORD` and front with nginx TLS, or bind `HOST=127.0.0.1` | S |
 
@@ -16,7 +15,6 @@ Effort: S (<1 day), M (days), L (week+).
 
 | Priority | Title | Description | Effort |
 |----------|-------|-------------|--------|
-| MED | End-to-end tests | ffmpeg launch, simulated movement, frame extraction, movement completion; replace the CRA `src/App.test.js` leftover | M |
 
 ## Improved Object Detection Accuracy
 

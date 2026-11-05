@@ -3,7 +3,7 @@ name = "open-source-nvr-detector"
 version = "0.1.0"
 description = "Object detection module for Open Source NVR system"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 authors = [
     {name = "FOSS-nvrplus contributors"},
 ]
@@ -13,7 +13,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -22,7 +21,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "numpy>=1.24.4,<=1.26.4",
+    "numpy>=1.24.4",
     "opencv-python-headless>=4.5.0",
     "onnxruntime>=1.15.0",  # For ONNX inference
 ]
