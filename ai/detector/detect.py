@@ -148,11 +148,7 @@ def draw(image, boxes, scores, classes):
 
 def setup_model(args):
     model_path = args.model_path
-    if model_path.endswith('.pt') or model_path.endswith('.torchscript'):
-        platform = 'pytorch'
-        from py_utils.pytorch_executor import Torch_model_container
-        model = Torch_model_container(args.model_path)
-    elif model_path.endswith('.tflite'):
+    if model_path.endswith('.tflite'):
         platform = 'edgetpu'
         from py_utils.edgetpu_executor import EdgeTPU_model_container
         model = EdgeTPU_model_container(args.model_path, args.device_id)
@@ -161,7 +157,7 @@ def setup_model(args):
         from py_utils.onnx_executor import ONNX_model_container
         model = ONNX_model_container(args.model_path)
     else:
-        assert False, "{} is not pytorch/onnx/tflite model".format(model_path)
+        assert False, "{} is not onnx/tflite model".format(model_path)
     #print('Model-{} is {} model, starting val'.format(model_path, platform))
     return model, platform
 
@@ -176,7 +172,7 @@ def main():
     """Main entry point for the detector package"""
     parser = argparse.ArgumentParser(description='Process some integers.')
     # basic params
-    parser.add_argument('--model_path', type=str, required= True, help='model path, could be .onnx, .pt or Edge TPU .tflite file')
+    parser.add_argument('--model_path', type=str, required= True, help='model path, ONNX (.onnx) or Edge TPU (.tflite) model')
     parser.add_argument('--device_id', type=str, default=None, help='Edge TPU device selector, e.g. usb:0 (default: first)')
     
     parser.add_argument('--img_show', action='store_true', default=False, help='draw the result and show')
@@ -231,7 +227,7 @@ def main():
             img_h, img_w = img_src.shape[:2]
             img = cv2.cvtColor(img_src, cv2.COLOR_BGR2RGB)
 
-            if platform in ['pytorch', 'onnx']:
+            if platform == 'onnx':
                 input_data = img.transpose((2,0,1))
                 input_data = input_data.reshape(1,*input_data.shape).astype(np.float32)
                 input_data = input_data/255.
