@@ -25,8 +25,13 @@ dependencies = [
     "numpy>=1.24.4,<=1.26.4",
     "opencv-python-headless>=4.5.0",
     "onnxruntime>=1.15.0",  # For ONNX inference
-    "rknn-toolkit2>=2.3.2" # For RKNN inference
 ]
+
+[project.optional-dependencies]
+# RKNN NPU inference (Rockchip aarch64 only): pip install -e "./ai[rknn]"
+rknn = ["rknn-toolkit2>=2.3.2"]
+# Used by scripts/fetch-model.sh to export the ONNX model
+export = ["ultralytics"]
 
 
 

@@ -83,7 +83,7 @@ deactivate
 ### To manually run the server
 
 ```
-PATH="$PWD/.venv/bin:$PATH" LOG_LEVEL=info node ./lib/index.js
+PATH="$PWD/.venv/bin:$PATH" LOG_LEVEL=info node ./lib/server/index.js
 ```
 
 Set `LOG_LEVEL` to `debug` for verbose logging, or `error` for minimal output.
@@ -95,7 +95,7 @@ Then open a browser and navigate to `http://<hostname>:8080`.  You are free to u
 
 ## Object Detection with YOLO11n ONNX
 
-The app includes a YOLO11n ONNX model at `./ai/model/yolo11n.onnx` for real-time object detection. To use it:
+Run `scripts/fetch-model.sh` (or `scripts/build.sh`, which does the full build) to export YOLO11n to `./ai/model/yolo11n.onnx` (not committed). For Rockchip NPUs install the RKNN extra: `pip install -e "./ai[rknn]"`. An example systemd unit is in `docs/open-source-nvr.service.example`. To use it:
 
 1. Install Python dependencies (see build instructions above)
 2. In the settings panel, enable ML detection
