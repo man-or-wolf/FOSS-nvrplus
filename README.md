@@ -95,7 +95,7 @@ Then open a browser and navigate to `http://<hostname>:8080`.  You are free to u
 
 ## Object Detection with YOLO11n ONNX
 
-Run `scripts/fetch-model.sh` (or `scripts/build.sh`, which does the full build) to export YOLO11n to `./ai/model/yolo11n.onnx` (not committed). For Rockchip NPUs install the RKNN extra: `pip install -e "./ai[rknn]"`. An example systemd unit is in `docs/open-source-nvr.service.example`. To use it:
+Run `scripts/fetch-model.sh` (or `scripts/build.sh`, which does the full build) to export YOLO11n to `./ai/model/yolo11n.onnx` (not committed). For Coral Edge TPU inference see `ai/README.md`. An example systemd unit is in `docs/open-source-nvr.service.example`. To use it:
 
 1. Install Python dependencies (see build instructions above)
 2. In the settings panel, enable ML detection

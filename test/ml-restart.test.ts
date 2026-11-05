@@ -46,7 +46,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: false,
             detection_model: '',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '03:30'
@@ -75,7 +74,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: true,
             detection_model: 'stub',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '01:00'
@@ -107,7 +105,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: true,
             detection_model: 'stub',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '01:00'
@@ -139,7 +136,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: true,
             detection_model: 'stub',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '' // Disabled
@@ -171,7 +167,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: true,
             detection_model: 'stub',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '01:00'
@@ -205,7 +200,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: true,
             detection_model: 'stub',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '01:00'
@@ -258,7 +252,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: true,
             detection_model: 'stub',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '01:00'
@@ -322,7 +315,6 @@ describe('ML Process Scheduled Restart (Integration)', () => {
             disk_cleanup_capacity: 80,
             detection_enable: true,
             detection_model: 'stub',
-            detection_target_hw: '',
             detection_frames_path: 'frames',
             detection_tag_filters: [],
             ml_restart_schedule: '01:00'

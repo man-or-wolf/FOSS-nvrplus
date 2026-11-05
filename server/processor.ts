@@ -321,7 +321,7 @@ export function resetProcessorState(): void {
 
 /**
  * Kill an ML detection process with SIGTERM, escalating to SIGKILL if it doesn't exit.
- * RKNN runtime can block SIGTERM, so escalation is needed to avoid orphaned processes.
+ * Native inference runtimes can block SIGTERM, so escalation is needed to avoid orphaned processes.
  */
 function killMLProcess(proc: ChildProcessWithoutNullStreams): void {
     const pid = proc.pid;
@@ -416,10 +416,6 @@ export async function controllerDetector(): Promise<void> {
                 ? ['-u', '-m', 'detector.detect_stub']
                 : ['-u', '-m', 'detector.detect', '--model_path', settings.detection_model];
 
-            if (!isStub && settings.detection_target_hw) {
-                cmdArgs.push('--target', settings.detection_target_hw);
-            }
-
             const mlProcessor = createMLResultProcessor(processDetectionResult);
 
             const newProcess = spawnProcess({
@@ -470,8 +466,7 @@ export async function controllerDetector(): Promise<void> {
 
             deps.logger.info('ML detection pipeline initialized', {
                 pid: _inmem_mlDetectionProcess.pid,
-                model: settings.detection_model,
-                target: settings.detection_target_hw || 'default'
+                model: settings.detection_model
             });
         } catch (error) {
             deps.logger.error('Failed to start ML detection process', { error: String(error) });

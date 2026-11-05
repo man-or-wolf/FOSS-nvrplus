@@ -327,7 +327,7 @@ export function PanelSettings({panel, setPanel, data, getServerData}) {
                     
                     <Field
                       label="YOLO Model Path"
-                      hint="Relative to ./ai directory (e.g., 'model/yolo11n.onnx' or 'model/yolo11n-rk3588.rknn')"
+                      hint="Relative to ./ai directory (e.g., 'model/yolo11n.onnx' or 'model/yolo11n_edgetpu.tflite')"
                       validationState={getError('detection_model') ? "error" : "none"}
                       validationMessage={getError('detection_model')}>
                       <Input 
@@ -338,23 +338,6 @@ export function PanelSettings({panel, setPanel, data, getServerData}) {
                         onChange={(_, data) => updatePanelValues('detection_model', data.value)} />
                     </Field>
 
-                    <Field
-                      label="Target Platform"
-                      hint="Hardware acceleration target (leave empty for CPU/ONNX)"
-                      validationState={getError('detection_target_hw') ? "error" : "none"}
-                      validationMessage={getError('detection_target_hw')}>  
-                      <Dropdown 
-                        style={{"width": "100%"}} 
-                        disabled={!panel.values.detection_enable}
-                        placeholder="CPU (default)"
-                        value={panel.values.detection_target_hw || ''}
-                        selectedOptions={panel.values.detection_target_hw ? [panel.values.detection_target_hw] : []}
-                        onOptionSelect={(_, data) => updatePanelValues('detection_target_hw', data.optionValue)}>
-                        <Option key="" value="">CPU (default)</Option>
-                        <Option key="rk3588" value="rk3588">RK3588 (RKNN)</Option>
-                        <Option key="rk3576" value="rk3576">RK3576 (RKNN)</Option>
-                      </Dropdown>
-                    </Field>
 
                     <Field
                       label="Frames Output Path"

@@ -31,4 +31,4 @@ Effort: S (<1 day), M (days), L (week+).
 
 ## Notes
 
-Coral Edge TPU setup: [ai/README.md](./ai/README.md#coral-edge-tpu). RKNN is an alternative: [ai/README.md](./ai/README.md#rknn-rockchip-npu-conversion).
+Coral Edge TPU setup: [ai/README.md](./ai/README.md#coral-edge-tpu).

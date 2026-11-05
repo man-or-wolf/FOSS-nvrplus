@@ -25,7 +25,6 @@ export interface Settings {
     disk_cleanup_capacity: number;
     detection_enable: boolean;
     detection_model: string;
-    detection_target_hw: string;
     detection_frames_path: string;
     detection_tag_filters: TagFilter[];
     /** ML process restart schedule in cron-like format: "HH:MM" (24-hour). Empty = disabled. Default: "01:00" */

@@ -132,7 +132,6 @@ export async function createServer(config: ServerConfig = {}): Promise<ServerHan
         settings: {
             disk_base_dir: '',
             detection_model: '',
-            detection_target_hw: '',
             detection_frames_path: '',
             detection_enable: false,
             detection_tag_filters: [],

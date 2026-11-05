@@ -37,4 +37,3 @@ web.sh
 
 ai/model/*.onnx
 ai/model/*.pt
-ai/model/*.rknn

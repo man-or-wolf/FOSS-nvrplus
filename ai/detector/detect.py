@@ -8,7 +8,6 @@ import json
 #realpath = os.path.abspath(__file__)
 #_sep = os.path.sep
 #realpath = realpath.split(_sep)
-#sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('rknn_model_zoo')+1]))
 
 from py_utils.coco_utils import COCO_test_helper
 import numpy as np
@@ -151,10 +150,6 @@ def setup_model(args):
         platform = 'pytorch'
         from py_utils.pytorch_executor import Torch_model_container
         model = Torch_model_container(args.model_path)
-    elif model_path.endswith('.rknn'):
-        platform = 'rknn'
-        from py_utils.rknn_executor import RKNN_model_container 
-        model = RKNN_model_container(args.model_path, args.target, args.device_id)
     elif model_path.endswith('.tflite'):
         platform = 'edgetpu'
         from py_utils.edgetpu_executor import EdgeTPU_model_container
@@ -164,7 +159,7 @@ def setup_model(args):
         from py_utils.onnx_executor import ONNX_model_container
         model = ONNX_model_container(args.model_path)
     else:
-        assert False, "{} is not rknn/pytorch/onnx/tflite model".format(model_path)
+        assert False, "{} is not pytorch/onnx/tflite model".format(model_path)
     #print('Model-{} is {} model, starting val'.format(model_path, platform))
     return model, platform
 
@@ -179,9 +174,8 @@ def main():
     """Main entry point for the detector package"""
     parser = argparse.ArgumentParser(description='Process some integers.')
     # basic params
-    parser.add_argument('--model_path', type=str, required= True, help='model path, could be .pt or .rknn file')
-    parser.add_argument('--target', type=str, default='rk3566', help='target RKNPU platform')
-    parser.add_argument('--device_id', type=str, default=None, help='device id')
+    parser.add_argument('--model_path', type=str, required= True, help='model path, could be .onnx, .pt or Edge TPU .tflite file')
+    parser.add_argument('--device_id', type=str, default=None, help='Edge TPU device selector, e.g. usb:0 (default: first)')
     
     parser.add_argument('--img_show', action='store_true', default=False, help='draw the result and show')
     parser.add_argument('--img_save', action='store_true', default=False, help='save the result')
