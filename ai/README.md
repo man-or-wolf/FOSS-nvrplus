@@ -93,3 +93,23 @@ nvr-detect --model_path ./model/yolo11.onnx
 ```
 
 
+## RKNN (Rockchip NPU) conversion
+
+RK3588 only. Install the extra: `pip install -e "./ai[rknn]"`.
+
+1. On an x86 host (e.g. WSL), get the model zoo and the ONNX model:
+   ```bash
+   git clone https://github.com/airockchip/rknn_model_zoo
+   cd rknn_model_zoo/examples/yolo11/model && bash ./download_model.sh
+   ```
+2. Convert with `rknn-toolkit2` (https://github.com/airockchip/rknn-toolkit2) in a venv:
+   ```bash
+   cd ../python
+   python3 -m venv myenv && source myenv/bin/activate
+   pip3 install rknn-toolkit2
+   python convert.py ../model/yolo11n.onnx rk3588
+   deactivate
+   ```
+3. Copy the resulting `.rknn` to `ai/model/` and run `nvr-detect --model_path ./model/yolo11n.rknn --target rk3588`.
+
+Reference: https://github.com/airockchip/rknn_model_zoo/tree/main/examples/yolo11
