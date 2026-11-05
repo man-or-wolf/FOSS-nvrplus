@@ -21,6 +21,10 @@ else
 fi
 
 [ -f ai/model/yolo11n.onnx ] && ok "ai/model/yolo11n.onnx" || warn "model missing: run scripts/fetch-model.sh"
+if [ -e ai/model/yolo11n_edgetpu.tflite ] || ls ai/model/*.tflite >/dev/null 2>&1; then
+  ldconfig -p 2>/dev/null | grep -q libedgetpu && ok "libedgetpu installed" || bad "libedgetpu1-std not installed (needed for .tflite model)"
+  (lsusb 2>/dev/null | grep -qi -E "1a6e|18d1" || ls /dev/apex_0 >/dev/null 2>&1) && ok "Coral device visible" || warn "no Coral device (USB 1a6e/18d1 or /dev/apex_0) seen"
+fi
 [ -d lib/server ] && ok "server built (lib/server)" || warn "not built: run scripts/build.sh"
 [ -f dist/index.html ] || [ -f build/index.html ] || warn "frontend build output not found"
 loginctl show-user "${USER:-$(id -un)}" -p Linger 2>/dev/null | grep -q yes \

@@ -321,6 +321,7 @@ Maintain state in the following databases:
 
 ## Security & pre-install checklist
 
+- For Coral Edge TPU inference see [ai/README.md](./ai/README.md#coral-edge-tpu).
 - Run `scripts/preflight.sh /video` to check node/ffmpeg/python, the video mount, model, build and linger.
 - Auth: set `NVR_USER` and `NVR_PASSWORD` (e.g. `Environment=` lines in the systemd unit) to enable HTTP basic auth on the UI, API and `/metrics` (Prometheus supports `basic_auth`). Use TLS via nginx when exposed beyond your LAN; basic auth is plaintext without it.
 - Bind address: `HOST` (default `0.0.0.0`). Use `HOST=127.0.0.1` behind a reverse proxy. A warning is logged if there is no auth on a non-loopback address.

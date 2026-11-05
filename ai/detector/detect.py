@@ -155,12 +155,16 @@ def setup_model(args):
         platform = 'rknn'
         from py_utils.rknn_executor import RKNN_model_container 
         model = RKNN_model_container(args.model_path, args.target, args.device_id)
+    elif model_path.endswith('.tflite'):
+        platform = 'edgetpu'
+        from py_utils.edgetpu_executor import EdgeTPU_model_container
+        model = EdgeTPU_model_container(args.model_path, args.device_id)
     elif model_path.endswith('onnx'):
         platform = 'onnx'
         from py_utils.onnx_executor import ONNX_model_container
         model = ONNX_model_container(args.model_path)
     else:
-        assert False, "{} is not rknn/pytorch/onnx model".format(model_path)
+        assert False, "{} is not rknn/pytorch/onnx/tflite model".format(model_path)
     #print('Model-{} is {} model, starting val'.format(model_path, platform))
     return model, platform
 

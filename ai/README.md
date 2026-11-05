@@ -113,3 +113,13 @@ RK3588 only. Install the extra: `pip install -e "./ai[rknn]"`.
 3. Copy the resulting `.rknn` to `ai/model/` and run `nvr-detect --model_path ./model/yolo11n.rknn --target rk3588`.
 
 Reference: https://github.com/airockchip/rknn_model_zoo/tree/main/examples/yolo11
+
+
+## Coral Edge TPU
+
+1. Host: install the Edge TPU runtime (`libedgetpu1-std`, https://coral.ai/docs/accelerator/get-started/) and ensure the user can access the device (udev rules from that package; USB: `plugdev` group).
+2. Python: `pip install -e "./ai[coral]"` (`tflite-runtime` on Python < 3.12, `ai-edge-litert` otherwise; Coral wheels on newer Pythons are the main compatibility risk, so test with `python -c "from tflite_runtime.interpreter import load_delegate; load_delegate('libedgetpu.so.1')"`).
+3. Model: on an x86-64 Linux box with `edgetpu_compiler`, run `scripts/export-edgetpu.sh [imgsz]` (default 320; 640 leaves more ops on the CPU and is slower). Copy `ai/model/yolo11n_edgetpu.tflite` to the NVR host.
+4. Settings: set the detection model to `ai/model/yolo11n_edgetpu.tflite`. Frames arrive at 640x640 and are resized to the model input; boxes are mapped back.
+
+INT8 quantisation lowers accuracy versus the ONNX model; compare tags on real footage. Check the compiler log for ops left on the CPU.
