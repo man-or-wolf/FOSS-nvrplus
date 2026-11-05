@@ -52,7 +52,6 @@ class Torch_model_container:
             result[i] = torch.dequantize(result[i])
 
         for i in range(len(result)):
-            # TODO support quantized_output
             result[i] = result[i].cpu().detach().numpy()
 
         return result

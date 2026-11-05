@@ -8,7 +8,8 @@ warn() { echo "  WARN $*"; }
 
 command -v node >/dev/null && [ "$(node -p 'process.versions.node.split(".")[0]')" -ge 22 ] \
   && ok "node $(node -v)" || bad "node >= 22 required"
-[ -x /usr/bin/ffmpeg ] && ok "$(/usr/bin/ffmpeg -version | head -1)" || bad "/usr/bin/ffmpeg missing (path is hardcoded in server)"
+FFMPEG="${FFMPEG_PATH:-/usr/bin/ffmpeg}"
+[ -x "$FFMPEG" ] && ok "$("$FFMPEG" -version | head -1)" || bad "$FFMPEG missing (set FFMPEG_PATH to override)"
 command -v python3 >/dev/null && python3 -c 'import venv' 2>/dev/null \
   && ok "$(python3 -V) + venv" || bad "python3 with venv module required"
 

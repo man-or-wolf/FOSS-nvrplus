@@ -5,7 +5,7 @@ description = "Object detection module for Open Source NVR system"
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "FOSS-nvrplus contributors"},
 ]
 keywords = ["object-detection", "nvr", "computer-vision", "coral", "edgetpu"]
 classifiers = [
@@ -39,9 +39,9 @@ export = ["ultralytics"]
 nvr-detect = "detector.detect:main"
 
 [project.urls]
-Homepage = "https://github.com/your-username/open-source-nvr"
-Repository = "https://github.com/your-username/open-source-nvr"
-Issues = "https://github.com/your-username/open-source-nvr/issues"
+Homepage = "https://github.com/man-or-wolf/FOSS-nvrplus"
+Repository = "https://github.com/man-or-wolf/FOSS-nvrplus"
+Issues = "https://github.com/man-or-wolf/FOSS-nvrplus/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

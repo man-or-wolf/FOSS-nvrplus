@@ -6,6 +6,9 @@
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import * as fs from 'fs/promises';
 
+/** ffmpeg binary (override with FFMPEG_PATH) */
+export const FFMPEG_PATH = process.env['FFMPEG_PATH'] || '/usr/bin/ffmpeg';
+
 // Helper for encoding movement keys consistently
 const encodeMovementKey = (n: number): string => {
     return n.toString().padStart(12, '0');

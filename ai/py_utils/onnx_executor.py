@@ -1,4 +1,3 @@
-import os
 import numpy as np
 import onnxruntime as rt
 
@@ -77,36 +76,5 @@ class ONNX_model_container_py:
         self.sess = None
 
 
-class ONNX_model_container_cpp:
-    def __init__(self, model_path) -> None:
-        pass
-
-    def run(self, input_datas):
-        pass
-
-
-def ONNX_model_container(model_path, backend='py'):
-    if backend == 'py':
-        return ONNX_model_container_py(model_path)
-    elif backend == 'cpp':
-        return ONNX_model_container_cpp(model_path)
-
-
-def reset_onnx_shape(onnx_model_path, output_path, input_shapes):
-    if isinstance(input_shapes[0], int):
-        command = "python -m onnxsim {} {} --input-shape {}".format(onnx_model_path, output_path, ','.join([str(v) for v in input_shapes]))
-    else:
-        if len(input_shapes)!= 1:
-            print("RESET ONNX SHAPE with more than one input, try to match input name")
-            sess = rt.InferenceSession(onnx_model_path)
-            input_names = [input.name for input in sess.get_inputs()]
-            command = "python -m onnxsim {} {} --input-shape ".format(onnx_model_path, output_path)
-            for i, input_name in enumerate(input_names):
-                command += "{}:{} ".format(input_name, ','.join([str(v) for v in input_shapes[i]]))
-        else:
-            command = "python -m onnxsim {} {} --input-shape {}".format(onnx_model_path, output_path, ','.join([str(v) for v in input_shapes[0]]))
-    
-    print(command)
-    os.system(command)
-    return output_path
-    
+def ONNX_model_container(model_path):
+    return ONNX_model_container_py(model_path)

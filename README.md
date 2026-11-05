@@ -3,13 +3,13 @@
 
 #  Open-Source Network Video Recorder (NVR), with Object Detection
 
-Web application to monitor your IP Security Camera network, continuously record camera feeds to your computers harddrive, and monitor motion events through a web app. Features include:
+Web application to monitor your IP Security Camera network, continuously record camera feeds to your computers hard drive, and monitor motion events through a web app. Features include:
 
-  :heavy_check_mark:  No expensive hardware required, use your old computers & harddrives \
+  :heavy_check_mark:  No expensive hardware required, use your old computers & hard drives \
   :heavy_check_mark:  Supports one or multiple cameras, with single, filtered, motion list \
   :heavy_check_mark:  No cloud account required, self-contained \
   :heavy_check_mark:  Enhance your Cameras motion detection with Object Detection tagging/filtering \
-  :heavy_check_mark:  Continuously monitors hardrives, deleting the oldest video segments when almost full 
+  :heavy_check_mark:  Continuously monitors hard drives, deleting the oldest video segments when almost full 
 
 
 
@@ -17,7 +17,7 @@ Web application to monitor your IP Security Camera network, continuously record 
   <img width="700"  src="./assets/wenui.png">
 </p>
 
-> **_NOTE:_** This repo was developed with Reolink POE cameras, that provided a RTMP endpoint, and a API for motion detection. But can be develoed/extended for other IP cameras
+> **_NOTE:_** This repo was developed with Reolink POE cameras, that provided a RTMP endpoint, and a API for motion detection. But can be developed/extended for other IP cameras
 
 ### Object Detection
 
@@ -29,7 +29,7 @@ In addition, if your cameras motion sensor triggers a detection, the app will ta
 
 ### Settings
 
-Using the settings menu, you first select the disk you will be using to stream real-time video from the cameras, and if you want to use the auto-deletion featre to prevent the disk from filling up, then if you want to use the object detection feature. Then you can add your cameras
+Using the settings menu, you first select the disk you will be using to stream real-time video from the cameras, and if you want to use the auto-deletion feature to prevent the disk from filling up, then if you want to use the object detection feature. Then you can add your cameras
 
 <p align="center">
   <img width="250"  src="./assets/settings1a.png"> <img width="250"   src="./assets/settings2a.png"> 
@@ -45,7 +45,7 @@ Using the settings menu, you first select the disk you will be using to stream r
 
 ## Install / Setup / Run
 
-The benifit of this app, its, its open-source, and it can be installed on any comodity h/w running linux (a free o/s operating system), techincal savvy users should be able to get this working.
+This app is open-source and can be installed on any commodity hardware running Linux, so technically savvy users should be able to get it working.
 
 ## ROADMAP
 
@@ -126,7 +126,7 @@ Hover over any icon for a tooltip with additional details.
 To start automatically on boot, enable the systemd user service:
 
 ```bash
-# Create the service (already provided at ~/.config/systemd/user/open-source-nvr.service)
+# Create the service from docs/open-source-nvr.service.example (see header comments)
 systemctl --user daemon-reload
 systemctl --user enable --now open-source-nvr
 
@@ -206,7 +206,7 @@ sudo htpasswd -c /etc/nginx/.htpasswd <username>
 
 
 
-## Example to create Logic Volume for the local files 
+## Example to create Logical Volume for the local files 
 
 To create a logical volume from a volume group storage pool, use the ```lvcreate``` command. Specify the size of the logical volume with the -L option, specify a name with the -n option, and pass in the volume group to allocate the space from.
 
@@ -253,17 +253,17 @@ HTTP Live Streaming (HLS) is a widely used protocol developed by Apple that will
 ##  Target `./server` app structure
 
 
-Each major program components should be separated in its own file, for example
+Each major program component should be separated into its own file, for example
 - `www.ts` has the web apis
 - `sse-manager.ts` has the SSE
 - `disk-check.ts` has all the disk cleaning logic
 - `processor.ts` has all the control logic
 
-there can be a utils files that have helper functions if it makes the files easer to read/maintain
+there can be a utils files that have helper functions if it makes the files easier to read/maintain
 
 ## Processor logic
 
-There should be a single control loop, that will be ran ever second the calls the following functions that are described below.
+There should be a single control loop, that runs every second and calls the following functions that are described below.
 
 Each function can have have entry-criteria checked before running. I'd like these checks to be implemented clearly so the code will be easy to maintain.
 

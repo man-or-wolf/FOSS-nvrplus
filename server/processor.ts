@@ -21,7 +21,8 @@ import {
     createMLResultProcessor,
     verifyStreamStartup,
     setDependencies,
-    setLogger
+    setLogger,
+    FFMPEG_PATH,
 } from './process-utils.js';
 import { sseManager, formatMovementForSSE } from './sse-manager.js';
 import * as metrics from './metrics.js';
@@ -568,7 +569,7 @@ export async function controllerFFmpeg(
 
         const childProcess = spawnProcess({
             name,
-            cmd: '/usr/bin/ffmpeg',
+            cmd: FFMPEG_PATH,
             args: cmdArgs,
             captureOutput: true,
             onStderr: (data: string) => {
@@ -1327,7 +1328,7 @@ export async function triggerProcessMovement(cameraKey: string): Promise<void> {
     // Spawn ffmpeg
     const ffmpeg = spawnProcess({
         name: `ffmpeg-${cameraEntry.name}-mov${movement_key}`,
-        cmd: '/usr/bin/ffmpeg',
+        cmd: FFMPEG_PATH,
         args: ffmpegArgs,
         onStdout: frameProcessor.processStdout,
         onStderr: frameProcessor.processStderr,

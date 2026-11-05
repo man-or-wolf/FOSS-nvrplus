@@ -12,7 +12,7 @@ import fs from 'fs/promises';
 import { createReadStream } from 'fs';
 import { Level } from 'level';
 import type { Server } from 'node:http';
-import { runProcess } from './process-utils.js';
+import { runProcess, FFMPEG_PATH } from './process-utils.js';
 import { sseManager, formatMovementForSSE } from './sse-manager.js';
 import { diskCheck, catalogVideo, DiskCheckReturn } from './diskcheck.js';
 import type { Logger } from 'winston';
@@ -457,7 +457,7 @@ stream${n + segmentInt - preseq}.ts`).join("\n") + "\n" + "#EXT-X-ENDLIST\n";
 
                 const result = await runProcess({
                     name: `mp4-gen-${cameraKey}-${startSegment}`,
-                    cmd: '/usr/bin/ffmpeg',
+                    cmd: FFMPEG_PATH,
                     args: ['-y', '-i', `http://127.0.0.1:${port}/video/${startSegment}/${seconds}/${cameraKey}/stream.m3u8${qs ? `?${qs}` : ''}`, '-c', 'copy', serve],
                     timeout: 50000
                 });
