@@ -554,6 +554,10 @@ export function PanelSettings({panel, setPanel, data, getServerData}) {
                       <Input style={{"width": "100%"}} contentBefore={<NetworkAdapter16Regular/>}  required value={panel.values.ip} onChange={(_, data) => updatePanelValues('ip', data.value)} />
                     </Field>
 
+                    <Field label="Camera User (default: admin)">
+                      <Input style={{"width": "100%"}} placeholder="admin" value={panel.values.user || ''} onChange={(_, data) => updatePanelValues('user', data.value)} />
+                    </Field>
+
                     <Field
                       label="Camera Password (display on create only)"
                       validationState={getError('passwd') ? "error" : "none"}

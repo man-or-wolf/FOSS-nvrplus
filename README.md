@@ -318,3 +318,11 @@ Maintain state in the following databases:
 - `settingsdb` - System settings 
 - `movementdb` - Movement events - the key is time-based, based on the movement time detected
 
+
+## Security & pre-install checklist
+
+- Run `scripts/preflight.sh /video` to check node/ffmpeg/python, the video mount, model, build and linger.
+- Auth: set `NVR_USER` and `NVR_PASSWORD` (e.g. `Environment=` lines in the systemd unit) to enable HTTP basic auth on the UI, API and `/metrics` (Prometheus supports `basic_auth`). Use TLS via nginx when exposed beyond your LAN; basic auth is plaintext without it.
+- Bind address: `HOST` (default `0.0.0.0`). Use `HOST=127.0.0.1` behind a reverse proxy. A warning is logged if there is no auth on a non-loopback address.
+- Camera credentials: the camera login user is configurable (default `admin`); passwords are URL-encoded in RTSP/motion URLs, masked in logs, and credentials in `streamSource`/`motionUrl` are masked in API responses.
+- Set the disk cleanup threshold in Settings before the volume fills.

@@ -13,6 +13,7 @@
  */
 
 import fs from 'fs/promises';
+import { redact, redactSecret } from './security.js';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import {
     spawnProcess,
@@ -537,7 +538,7 @@ export async function controllerFFmpeg(
 
         // Determine stream source: explicit streamSource, or construct from ip/passwd
         const streamSource = cameraEntry.streamSource || 
-            `rtsp://admin:${cameraEntry.passwd}@${cameraEntry.ip}:554/h264Preview_01_main`;
+            `rtsp://${encodeURIComponent(cameraEntry.user || 'admin')}:${encodeURIComponent(cameraEntry.passwd || '')}@${cameraEntry.ip}:554/h264Preview_01_main`;
         const isFileSource = !streamSource.startsWith('rtsp://');
         const isHlsSource = streamSource.endsWith('.m3u8');
 
@@ -578,7 +579,7 @@ export async function controllerFFmpeg(
             onStderr: (data: string) => {
                 const output = data.toString().trim();
                 if (output) {
-                    deps.logger.error('ffmpeg streaming error', { name, data: output });
+                    deps.logger.error('ffmpeg streaming error', { name, data: redact(output) });
                 }
             },
             onClose: (code: number | null, signal: string | null) => {
@@ -747,12 +748,13 @@ export async function detectCameraMovement(cameraKey: string): Promise<void> {
     });
 
     const { ip, passwd, motionUrl } = cameraEntry;
+    const camUser = cameraEntry.user || 'admin';
 
     try {
         const { current_movement_key } = movementDetectionStatus || { current_movement_key: undefined };
 
         // Use motionUrl if provided, otherwise construct from ip/passwd
-        const apiUrl = motionUrl || `http://${ip}/api.cgi?cmd=GetMdState&user=admin&password=${passwd}`;
+        const apiUrl = motionUrl || `http://${ip}/api.cgi?cmd=GetMdState&user=${encodeURIComponent(camUser)}&password=${encodeURIComponent(passwd || '')}`;
 
         // Fetch with timeout
         const fetchAndReadPromise = (async () => {
@@ -794,7 +796,7 @@ export async function detectCameraMovement(cameraKey: string): Promise<void> {
         }
 
     } catch (error) {
-        const filtersensitive = String(error).replace(new RegExp(passwd || '', 'g'), '****');
+        const filtersensitive = redactSecret(String(error), passwd);
         deps.logger.error('detectCameraMovement failed', {
             camera: cameraEntry.name,
             error: filtersensitive

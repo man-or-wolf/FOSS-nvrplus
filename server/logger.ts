@@ -1,15 +1,16 @@
 import winston from 'winston';
+import { redact } from './security.js';
 
 // Get log level from environment variable or default to 'info'
 const logLevel = process.env['LOG_LEVEL'] || 'info';
 
 // Custom format for better readability
 const customFormat = winston.format.printf(({ level, message, timestamp, ...metadata }) => {
-    let msg = `${timestamp} [${level}] ${message}`;
+    let msg = redact(`${timestamp} [${level}] ${message}`);
     
     // Add metadata if present
     if (Object.keys(metadata).length > 0) {
-        msg += ` ${JSON.stringify(metadata)}`;
+        msg += ` ${redact(JSON.stringify(metadata))}`;
     }
     
     return msg;

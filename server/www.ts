@@ -4,6 +4,7 @@
  */
 
 import Koa from 'koa';
+import { redact, createBasicAuth, isLoopback } from './security.js';
 import Router from '@koa/router';
 import bodyParser from 'koa-bodyparser';
 import send from 'koa-send';
@@ -115,6 +116,8 @@ export interface CameraEntry {
     disk: string;
     ip?: string;
     passwd?: string;
+    /** Camera login user (default: admin) */
+    user?: string;
     /** 
      * Optional direct URL for motion detection API.
      * If provided, used instead of constructing from ip/passwd.
@@ -140,7 +143,7 @@ export interface CameraEntry {
     state_lastProcessedMovementKey?: string;
 }
 
-export interface CameraEntryClient extends Omit<CameraEntry, 'ip' | 'passwd'> {
+export interface CameraEntryClient extends Omit<CameraEntry, 'ip' | 'passwd' | 'user'> {
     key: string;
 }
 
@@ -740,6 +743,11 @@ stream${n + segmentInt - preseq}.ts`).join("\n") + "\n" + "#EXT-X-ENDLIST\n";
                         if (!deleteOption) {
                             // Preserve state_ fields - don't let client overwrite them
                             const { state_lastProcessedMovementKey: _drop, ...clientData } = new_ce as CameraEntry & { state_lastProcessedMovementKey?: string };
+                            // Client sees redacted URLs; keep the stored original if unchanged
+                            for (const f of ['streamSource', 'motionUrl'] as const) {
+                                const old = old_cc.cameraEntry[f];
+                                if (old && clientData[f] === redact(old)) clientData[f] = old;
+                            }
                             const new_vals: CameraEntry = { 
                                 ...old_cc.cameraEntry, 
                                 ...clientData,
@@ -846,7 +854,9 @@ stream${n + segmentInt - preseq}.ts`).join("\n") + "\n" + "#EXT-X-ENDLIST\n";
                 .filter(([_, value]) => !value.cameraEntry.delete)
                 .map(([key, value]) => {
                     const { cameraEntry } = value;
-                    const { ip, passwd, ...clientCameraEntry } = cameraEntry;
+                    const { ip, passwd, user, ...clientCameraEntry } = cameraEntry;
+                    if (clientCameraEntry.streamSource) clientCameraEntry.streamSource = redact(clientCameraEntry.streamSource);
+                    if (clientCameraEntry.motionUrl) clientCameraEntry.motionUrl = redact(clientCameraEntry.motionUrl);
                     return { key, ...clientCameraEntry } as CameraEntryClient;
                 });
 
@@ -974,14 +984,21 @@ stream${n + segmentInt - preseq}.ts`).join("\n") + "\n" + "#EXT-X-ENDLIST\n";
         });
     });
 
+    const auth = createBasicAuth();
+    if (auth) app.use(auth);
+    else logger.warn('No NVR_USER/NVR_PASSWORD set: web UI and API are unauthenticated');
     app.use(bodyParser());
     app.use(api.routes());
     app.use(nav.routes());
     app.use(assets.routes());
 
     logger.info('NVR Server starting', { port });
-    const server = app.listen(port);
+    const host = process.env['HOST'] || '0.0.0.0';
+    if (!auth && !isLoopback(host)) logger.warn('Listening on non-loopback address without auth', { host });
+    const server = app.listen(port, host);
 
+    // Host lookup makes listen async; wait so address() is valid
+    if (!server.listening) await new Promise<void>((res, rej) => { server.once('listening', res); server.once('error', rej); });
     return server;
 }
 
