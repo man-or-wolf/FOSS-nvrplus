@@ -198,7 +198,7 @@ export function initProcessor(dependencies: ProcessorDependencies): void {
     // Initialize process-utils with required dependencies
     setLogger(dependencies.logger);
     setDependencies({
-        settingsCache: dependencies.getSettingsCache(),
+        getSettingsCache: dependencies.getSettingsCache,
         movementdb: dependencies.movementdb,
         sendImageToMLDetection,
         getShuttingDown: () => _inmem_isShuttingDown

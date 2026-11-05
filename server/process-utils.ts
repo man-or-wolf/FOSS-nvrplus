@@ -29,18 +29,18 @@ export function getAllProcesses(): ChildProcessWithoutNullStreams[] {
 }
 
 // Forward declaration for settings and movementdb (will be injected)
-let settingsCache: any;
+let getSettingsCache: () => any;
 let movementdb: any;
 let sendImageToMLDetection: any;
 let isShuttingDown: boolean = false;
 
 export function setDependencies(deps: {
-    settingsCache: any;
+    getSettingsCache: () => any;
     movementdb: any;
     sendImageToMLDetection: (path: string, key: number) => void;
     getShuttingDown: () => boolean;
 }) {
-    settingsCache = deps.settingsCache;
+    getSettingsCache = deps.getSettingsCache;
     movementdb = deps.movementdb;
     sendImageToMLDetection = deps.sendImageToMLDetection;
     isShuttingDown = deps.getShuttingDown();
@@ -352,7 +352,7 @@ export function createFFmpegFrameProcessor(movement_key: string, framesPath: str
                             });
                             
                             // Send to ML detection pipeline
-                            if (settingsCache.settings.detection_enable) {
+                            if (getSettingsCache().settings.detection_enable) {
                                 sendImageToMLDetection(framePath, movement_key);
                             }
                             
