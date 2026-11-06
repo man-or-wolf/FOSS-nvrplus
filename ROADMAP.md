@@ -6,9 +6,9 @@ Effort: S (<1 day), M (days), L (week+).
 
 | Priority | Title | Description | Effort |
 |----------|-------|-------------|--------|
-| HIGH | Verify build on target | Run `scripts/build.sh` and `scripts/preflight.sh` on the target host | S |
-| HIGH | Coral Edge TPU bring-up | Install `libedgetpu1-std`, `pip install -e "./ai[coral]"`, run `scripts/export-edgetpu.sh`, verify `load_delegate` works on the host Python, then run a sample frame through `nvr-detect` (executor is untested on hardware) | M |
+| HIGH | `edgetpu_compiler` unavailable | Google's `coral-edgetpu-stable` apt repo 404s on Release (looks discontinued); no YOLO11 `.tflite` can be exported via `scripts/export-edgetpu.sh` until a compiler source is found (cached `.deb`, build from source, or an already-compiled model) | M |
 | HIGH | Real-camera smoke test | Stream, motion event, frame extraction, detection tags, disk cleanup threshold | S |
+| HIGH | Non-Reolink camera motion detection | `detectCameraMovement()` still hard-parses Reolink's `GetMdState` JSON shape (`body[0].value.state`); `streamSource`/`motionUrl` are overridable but the parser isn't - cameras with a different motion API (e.g. Hikvision ISAPI) need either a parser adapter or local frame-diff motion detection | M |
 | HIGH | Auth and TLS | Set `NVR_USER`/`NVR_PASSWORD` and front with nginx TLS, or bind `HOST=127.0.0.1` | S |
 
 ## Improved Object Detection Accuracy
@@ -28,6 +28,7 @@ Effort: S (<1 day), M (days), L (week+).
 - Tests: ML restart, security, e2e movement pipeline (stub detector), Edge TPU executor (fake interpreter), class labels.
 - ONNX output verified on CPU with a sample image.
 - Fixed: stale settings snapshot blocking frames to the detector; class label whitespace.
+- Coral Edge TPU bring-up verified on hardware (`libedgetpu.so.1` + gasket/apex kernel driver present): `EdgeTPU_model_container.run()` drives the real chip - confirmed via `/sys/class/apex/apex_0/interrupt_counts` incrementing 1:1 with invocations, 9ms median latency. Done with an already-compiled SSD model as a stand-in (wrong output shape for this repo's YOLO `post_process`, so only proves the executor/hardware path, not the full detection pipeline) because `edgetpu_compiler` isn't installable right now - see blocked item above.
 
 ## Notes
 

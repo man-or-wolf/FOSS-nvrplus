@@ -15,5 +15,5 @@ Koa/TypeScript NVR (`server/`), React UI (`src/`), Python detector (`ai/`). Stat
 
 ## Gotchas
 - Detector gets 640x640 letterboxed frames; `post_process` expects (1, 84, N) pixel-space output.
-- Edge TPU executor is untested on hardware.
+- Edge TPU executor verified on real Coral hardware (interrupt counts increment 1:1 with invocations); `edgetpu_compiler` is currently unobtainable (Google's apt repo is gone), so no real YOLO11 `.tflite` exists yet - see ROADMAP.
 - Module-level state in `process-utils.ts` must use getters, not snapshots of mutable settings.
