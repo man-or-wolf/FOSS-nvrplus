@@ -26,6 +26,7 @@ import {
     TORCH_PYTHON_PATH,
 } from './process-utils.js';
 import { sseManager, formatMovementForSSE } from './sse-manager.js';
+import { fetchHikvisionMotionState } from './hikvision.js';
 import * as metrics from './metrics.js';
 import { diskCheck, DiskCheckReturn } from './diskcheck.js';
 import type { Logger } from 'winston';
@@ -747,45 +748,57 @@ export async function detectCameraMovement(cameraKey: string): Promise<void> {
         current_movement_key: movementDetectionStatus?.current_movement_key
     });
 
-    const { ip, passwd, motionUrl } = cameraEntry;
+    const { ip, passwd, motionUrl, motionProtocol } = cameraEntry;
     const camUser = cameraEntry.user || 'admin';
 
     try {
         const { current_movement_key } = movementDetectionStatus || { current_movement_key: undefined };
 
-        // Use motionUrl if provided, otherwise construct from ip/passwd
-        const apiUrl = motionUrl || `http://${ip}/api.cgi?cmd=GetMdState&user=${encodeURIComponent(camUser)}&password=${encodeURIComponent(passwd || '')}`;
+        let hasMovement: boolean;
 
-        // Fetch with timeout
-        const fetchAndReadPromise = (async () => {
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (motionProtocol === 'hikvision') {
+            if (!ip) throw new Error('detectCameraMovement: hikvision protocol requires cameraEntry.ip');
+            hasMovement = await fetchHikvisionMotionState(ip, camUser, passwd || '', motionUrl);
+
+            deps.logger.debug('detectCameraMovement: API result', {
+                camera: cameraEntry.name,
+                state: hasMovement ? 'MOVEMENT' : 'NO_MOVEMENT'
+            });
+        } else {
+            // Use motionUrl if provided, otherwise construct from ip/passwd
+            const apiUrl = motionUrl || `http://${ip}/api.cgi?cmd=GetMdState&user=${encodeURIComponent(camUser)}&password=${encodeURIComponent(passwd || '')}`;
+
+            // Fetch with timeout
+            const fetchAndReadPromise = (async () => {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return await response.text();
+            })();
+
+            const timeoutPromise = new Promise<string>((_, reject) =>
+                setTimeout(() => reject(new Error('Request timeout after 5000ms')), 5000)
+            );
+
+            const body_json = await Promise.race([fetchAndReadPromise, timeoutPromise]);
+
+            // Parse the JSON response
+            const body = JSON.parse(body_json);
+            const movementState = body[0]?.value?.state;
+
+            deps.logger.debug('detectCameraMovement: API result', {
+                camera: cameraEntry.name,
+                state: movementState === 1 ? 'MOVEMENT' : 'NO_MOVEMENT',
+                rawState: movementState
+            });
+
+            if (body[0]?.error) {
+                throw new Error(`detectCameraMovement: Camera API error: ${JSON.stringify(body[0].error)}`);
             }
-            return await response.text();
-        })();
 
-        const timeoutPromise = new Promise<string>((_, reject) =>
-            setTimeout(() => reject(new Error('Request timeout after 5000ms')), 5000)
-        );
-
-        const body_json = await Promise.race([fetchAndReadPromise, timeoutPromise]);
-
-        // Parse the JSON response
-        const body = JSON.parse(body_json);
-        const movementState = body[0]?.value?.state;
-
-        deps.logger.debug('detectCameraMovement: API result', {
-            camera: cameraEntry.name,
-            state: movementState === 1 ? 'MOVEMENT' : 'NO_MOVEMENT',
-            rawState: movementState
-        });
-
-        if (body[0]?.error) {
-            throw new Error(`detectCameraMovement: Camera API error: ${JSON.stringify(body[0].error)}`);
+            hasMovement = movementState === 1;
         }
-
-        const hasMovement = movementState === 1;
 
         if (hasMovement) {
             metrics.movementDetectionApiCalls.inc({ camera: cameraEntry.name, result: 'detected' });

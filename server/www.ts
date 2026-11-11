@@ -124,6 +124,13 @@ export interface CameraEntry {
      */
     motionUrl?: string;
     /**
+     * Motion detection protocol. 'reolink' (default) polls GetMdState and
+     * reads body[0].value.state. 'hikvision' polls the ISAPI alertStream
+     * for a short window and reads the latest VMD eventState -- see
+     * server/hikvision.ts.
+     */
+    motionProtocol?: 'reolink' | 'hikvision';
+    /**
      * Stream source for ffmpeg input. Can be:
      * - RTSP URL: rtsp://user:pass@ip:554/path
      * - File path: /path/to/video.mp4 (loops with -stream_loop -1)
