@@ -31,6 +31,10 @@ dependencies = [
 coral = ["tflite-runtime>=2.5; python_version < '3.12'", "ai-edge-litert; python_version >= '3.12'"]
 # Used by scripts/fetch-model.sh to export the ONNX model
 export = ["ultralytics"]
+# Torch inference on NVIDIA GPUs (e.g. Tesla P4/Pascal), bypassing ONNX/EdgeTPU.
+# Install with the matching CUDA wheel index, e.g. for cu121:
+#   pip install -e .[torch] --extra-index-url https://download.pytorch.org/whl/cu121
+torch = ["torch==2.5.1", "torchvision==0.20.1", "ultralytics"]
 
 
 

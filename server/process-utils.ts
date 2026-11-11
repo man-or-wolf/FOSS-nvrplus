@@ -9,6 +9,9 @@ import * as fs from 'fs/promises';
 /** ffmpeg binary (override with FFMPEG_PATH) */
 export const FFMPEG_PATH = process.env['FFMPEG_PATH'] || '/usr/bin/ffmpeg';
 
+/** python binary for torch-based (.pt) detection models (override with TORCH_PYTHON_PATH) */
+export const TORCH_PYTHON_PATH = process.env['TORCH_PYTHON_PATH'] || '/opt/nvrplus/.venv-torch/bin/python3';
+
 // Helper for encoding movement keys consistently
 const encodeMovementKey = (n: number): string => {
     return n.toString().padStart(12, '0');

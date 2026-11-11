@@ -156,8 +156,12 @@ def setup_model(args):
         platform = 'onnx'
         from py_utils.onnx_executor import ONNX_model_container
         model = ONNX_model_container(args.model_path)
+    elif model_path.endswith('.pt'):
+        platform = 'torch'
+        from py_utils.torch_executor import Torch_model_container
+        model = Torch_model_container(args.model_path)
     else:
-        assert False, "{} is not onnx/tflite model".format(model_path)
+        assert False, "{} is not onnx/tflite/pt model".format(model_path)
     #print('Model-{} is {} model, starting val'.format(model_path, platform))
     return model, platform
 
@@ -227,7 +231,7 @@ def main():
             img_h, img_w = img_src.shape[:2]
             img = cv2.cvtColor(img_src, cv2.COLOR_BGR2RGB)
 
-            if platform == 'onnx':
+            if platform in ('onnx', 'torch'):
                 input_data = img.transpose((2,0,1))
                 input_data = input_data.reshape(1,*input_data.shape).astype(np.float32)
                 input_data = input_data/255.

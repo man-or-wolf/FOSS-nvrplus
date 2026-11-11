@@ -23,6 +23,7 @@ import {
     setDependencies,
     setLogger,
     FFMPEG_PATH,
+    TORCH_PYTHON_PATH,
 } from './process-utils.js';
 import { sseManager, formatMovementForSSE } from './sse-manager.js';
 import * as metrics from './metrics.js';
@@ -413,6 +414,9 @@ export async function controllerDetector(): Promise<void> {
             
             // Use stub detector for testing (doesn't require OpenCV/ONNX)
             const isStub = settings.detection_model === 'stub';
+            // Torch (.pt) models need the dedicated torch venv -- its own CUDA-matched
+            // python3.11 interpreter, separate from the main .venv (python3.13)
+            const isTorch = settings.detection_model.endsWith('.pt');
             const cmdArgs = isStub 
                 ? ['-u', '-m', 'detector.detect_stub']
                 : ['-u', '-m', 'detector.detect', '--model_path', settings.detection_model];
@@ -421,7 +425,7 @@ export async function controllerDetector(): Promise<void> {
 
             const newProcess = spawnProcess({
                 name: 'ML-Detection',
-                cmd: 'python3',
+                cmd: isTorch ? TORCH_PYTHON_PATH : 'python3',
                 args: cmdArgs,
                 cwd: aiDir,
                 onStdout: mlProcessor.processStdout,
